@@ -159,9 +159,9 @@ cloudinary.config(
 )
 
 # Brevo (transactional email)
-BREVO_API_KEY = os.getenv("BREVO_API_KEY")
-BREVO_SENDER_EMAIL = os.getenv("BREVO_SENDER_EMAIL", "no-reply@yourbank.com")
-BREVO_SENDER_NAME = os.getenv("BREVO_SENDER_NAME", "Wells Fargo Bank")
+#BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+#BREVO_SENDER_EMAIL = os.getenv("BREVO_SENDER_EMAIL", "no-reply@yourbank.com")
+#BREVO_SENDER_NAME = os.getenv("BREVO_SENDER_NAME", "Wells Fargo Bank")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
