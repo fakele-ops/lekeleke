@@ -1,0 +1,351 @@
+:root {
+    --citi-navy: #002d62;
+    --citi-blue: #056dae;
+    --citi-red: #eb1c24;
+    --citi-bg: #f4f6f8;
+    --citi-card-bg: #ffffff;
+    --citi-border: #d1d5db;
+    --citi-text: #333333;
+    --citi-muted: #666666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+body {
+    background-color: var(--citi-bg);
+    color: var(--citi-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.citi-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 16px;
+    width: 100%;
+}
+
+/* Citibank Top Utility Bar */
+.citi-utility-bar {
+    background-color: var(--citi-navy);
+    color: #ffffff;
+    font-size: 0.8rem;
+    height: 36px;
+}
+
+.utility-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.active-portal {
+    background-color: #ffffff;
+    color: var(--citi-navy);
+    font-weight: 700;
+    padding: 8px 12px;
+}
+
+.utility-right a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 16px;
+}
+
+/* Header */
+.citi-header {
+    background: #ffffff;
+    border-bottom: 2px solid var(--citi-border);
+    padding: 14px 0;
+}
+
+.nav-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.citi-brand {
+    position: relative;
+    text-decoration: none;
+}
+
+.brand-text {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--citi-blue);
+    letter-spacing: -1px;
+}
+
+.brand-arc {
+    position: absolute;
+    top: -2px;
+    left: 8px;
+    width: 26px;
+    height: 12px;
+    border-top: 4px solid var(--citi-red);
+    border-radius: 50% 50% 0 0;
+}
+
+.header-security-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--citi-navy);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Main Layout */
+.signon-main {
+    flex: 1;
+    padding-top: 40px;
+    padding-bottom: 50px;
+}
+
+.signon-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.citi-card {
+    background: var(--citi-card-bg);
+    border: 1px solid var(--citi-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.signon-card {
+    padding: 28px;
+}
+
+.card-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--citi-border);
+    padding-bottom: 12px;
+}
+
+.card-header h2 {
+    color: var(--citi-navy);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+/* Messages */
+.messages-container {
+    margin-bottom: 16px;
+}
+
+.alert {
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.alert-info, .alert-success {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+
+/* Form Controls */
+.signon-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--citi-navy);
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--citi-border);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--citi-blue);
+    box-shadow: 0 0 0 2px rgba(5, 109, 174, 0.15);
+}
+
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--citi-muted);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    margin-top: 4px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--citi-text);
+    cursor: pointer;
+}
+
+.forgot-link {
+    color: var(--citi-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.btn-citi-blue {
+    background-color: var(--citi-blue);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s;
+}
+
+.btn-citi-blue:hover {
+    background-color: #045a90;
+}
+
+.btn-full {
+    width: 100%;
+    text-align: center;
+}
+
+.card-footer-links {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--citi-border);
+    text-align: center;
+}
+
+.card-footer-links p {
+    font-size: 0.85rem;
+    color: var(--citi-muted);
+    margin-bottom: 10px;
+}
+
+.btn-secondary-outline {
+    display: inline-block;
+    border: 1px solid var(--citi-blue);
+    color: var(--citi-blue);
+    padding: 10px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn-secondary-outline:hover {
+    background: #f0f7fc;
+}
+
+/* Info Column */
+.signon-info-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-card {
+    padding: 24px;
+}
+
+.info-icon {
+    font-size: 2rem;
+    color: var(--citi-blue);
+    margin-bottom: 12px;
+}
+
+.info-card h3 {
+    color: var(--citi-navy);
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+}
+
+.info-card p {
+    font-size: 0.85rem;
+    color: var(--citi-muted);
+    line-height: 1.5;
+}
+
+/* Footer */
+.citi-footer {
+    background: #ffffff;
+    border-top: 1px solid var(--citi-border);
+    padding: 24px 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--citi-muted);
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: var(--citi-muted);
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .signon-wrapper {
+        grid-template-columns: 1fr;
+    }
+}

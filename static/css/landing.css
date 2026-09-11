@@ -1,0 +1,479 @@
+:root {
+    --citi-navy: #002d62;
+    --citi-blue: #056dae;
+    --citi-light-blue: #00a3e0;
+    --citi-red: #eb1c24;
+    --citi-gray-bg: #f4f6f8;
+    --citi-border: #d1d5db;
+    --citi-text: #333333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+body {
+    background-color: var(--citi-gray-bg);
+    color: var(--citi-text);
+}
+
+.citi-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* Top Utility Header */
+.citi-utility-bar {
+    background-color: var(--citi-navy);
+    color: #ffffff;
+    font-size: 0.8rem;
+    height: 36px;
+}
+
+.utility-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.utility-left span, .utility-left a, .utility-right a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 8px 12px;
+    display: inline-block;
+}
+
+.utility-left .active-tab {
+    background-color: #ffffff;
+    color: var(--citi-navy);
+    font-weight: 700;
+}
+
+.utility-right a:hover {
+    text-decoration: underline;
+}
+
+/* Main Navbar */
+.citi-navbar {
+    background-color: #ffffff;
+    border-bottom: 2px solid var(--citi-border);
+    padding: 12px 0;
+}
+
+.nav-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-left-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Mobile Hamburger Button */
+.citi-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--citi-navy);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.citi-logo {
+    position: relative;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.logo-text {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--citi-blue);
+    letter-spacing: -1px;
+}
+
+/* Citibank Red Arc Accent */
+.logo-arc {
+    position: absolute;
+    top: -2px;
+    left: 8px;
+    width: 26px;
+    height: 12px;
+    border-top: 4px solid var(--citi-red);
+    border-radius: 50% 50% 0 0;
+}
+
+.citi-nav-links a {
+    text-decoration: none;
+    color: var(--citi-navy);
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin: 0 14px;
+}
+
+.citi-nav-links a:hover {
+    color: var(--citi-blue);
+}
+
+.nav-search button {
+    background: #f0f3f6;
+    border: 1px solid var(--citi-border);
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: #666;
+    cursor: pointer;
+}
+
+/* Mobile Navigation Drawer */
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    background-color: #ffffff;
+    z-index: 1050;
+    box-shadow: 4px 0 16px rgba(0,0,0,0.2);
+    transition: left 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-drawer.active {
+    left: 0;
+}
+
+.drawer-header {
+    background: var(--citi-navy);
+    color: white;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+}
+
+.close-drawer-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.drawer-links {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.drawer-links a {
+    text-decoration: none;
+    color: var(--citi-navy);
+    font-weight: 500;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.drawer-links hr {
+    border: none;
+    border-top: 1px solid var(--citi-border);
+    margin: 8px 0;
+}
+
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    display: none;
+}
+
+.drawer-overlay.active {
+    display: block;
+}
+
+/* Hero Section */
+.citi-hero {
+    background: linear-gradient(135deg, #001f44 0%, #056dae 100%);
+    padding: 40px 0;
+    min-height: 420px;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* Sign-On Card */
+.citi-signon-card {
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    padding: 24px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--citi-blue);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.card-header h2 {
+    color: var(--citi-navy);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.security-icon {
+    color: var(--citi-blue);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #444;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--citi-border);
+    border-radius: 3px;
+    font-size: 0.95rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--citi-blue);
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    margin-bottom: 20px;
+}
+
+.forgot-link {
+    color: var(--citi-blue);
+    text-decoration: none;
+}
+
+.citi-btn-primary {
+    width: 100%;
+    background-color: var(--citi-blue);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.citi-btn-primary:hover {
+    background-color: var(--citi-navy);
+}
+
+.card-footer {
+    margin-top: 20px;
+    border-top: 1px solid var(--citi-border);
+    padding-top: 14px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.card-footer a {
+    color: var(--citi-blue);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 4px;
+}
+
+/* Hero Banner */
+.citi-hero-banner {
+    color: #ffffff;
+    padding-top: 20px;
+}
+
+.citi-hero-banner h1 {
+    font-size: 2.8rem;
+    font-weight: 300;
+    margin-bottom: 16px;
+}
+
+.citi-hero-banner p {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    margin-bottom: 28px;
+    max-width: 540px;
+}
+
+.citi-btn-secondary {
+    display: inline-block;
+    background-color: #ffffff;
+    color: var(--citi-navy);
+    padding: 12px 28px;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+/* Quick Action Tiles */
+.citi-quick-actions {
+    margin-top: -20px;
+    margin-bottom: 40px;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.action-card {
+    background: #ffffff;
+    border: 1px solid var(--citi-border);
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--citi-navy);
+    font-weight: 500;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.action-card i {
+    display: block;
+    font-size: 1.6rem;
+    color: var(--citi-blue);
+    margin-bottom: 10px;
+}
+
+.action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
+.citi-footer {
+    background-color: #ffffff;
+    border-top: 1px solid var(--citi-border);
+    padding: 24px 0;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.footer-links a {
+    color: var(--citi-navy);
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.copyright {
+    margin-top: 12px;
+}
+
+/* ==========================================================================
+   MOBILE & RESPONSIVE FIXES (Matches mobile layout)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Hide desktop utility links on small screens to clean top overflow */
+    .citi-utility-bar {
+        font-size: 0.75rem;
+        height: auto;
+        padding: 6px 0;
+    }
+
+    .utility-left a, .utility-right a:not(.register-link) {
+        display: none;
+    }
+
+    /* Display Mobile Hamburger Menu Toggle */
+    .citi-hamburger {
+        display: block;
+    }
+
+    .citi-nav-links {
+        display: none;
+    }
+
+    /* Mobile Search Button */
+    .search-text {
+        display: none;
+    }
+
+    .nav-search button {
+        padding: 6px 12px;
+        border-radius: 50%;
+    }
+
+    /* Hero Section Responsive Layout */
+    .citi-hero {
+        padding: 20px 0 30px;
+    }
+
+    .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .citi-signon-card {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .citi-hero-banner {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .citi-hero-banner h1 {
+        font-size: 1.8rem;
+    }
+
+    .citi-hero-banner p {
+        font-size: 0.95rem;
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .citi-quick-actions {
+        margin-top: 20px;
+    }
+}

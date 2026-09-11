@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign On - Citi Online</title>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/signon.css' %}">
+</head>
+<body>
+
+    <!-- Citibank Top Utility Header -->
+    <div class="citi-utility-bar">
+        <div class="citi-container utility-flex">
+            <div class="utility-left">
+                <span class="active-portal">Personal Banking</span>
+            </div>
+            <div class="utility-right">
+                <a href="#"><i class="fa-solid fa-headset"></i> Contact Us</a>
+                <a href="#"><i class="fa-solid fa-globe"></i> Global Sites</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="citi-header">
+        <div class="citi-container nav-flex">
+            <a href="#" class="citi-brand">
+                <span class="brand-text">citi</span>
+                <span class="brand-arc"></span>
+            </a>
+            
+            <div class="header-security-badge">
+                <i class="fa-solid fa-lock"></i>
+                <span>Secure Sign On</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Sign-On Content Area -->
+    <main class="signon-main citi-container">
+        
+        <div class="signon-wrapper">
+            
+            <!-- Sign On Card -->
+            <div class="citi-card signon-card">
+                <div class="card-header">
+                    <h2>Sign On to Citi Online</h2>
+                </div>
+
+                <!-- Django Flash Messages (Errors / Info) -->
+                {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Main Authentication Form -->
+                <form method="POST" action="{% url 'signon' %}" class="signon-form">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="username">User ID</label>
+                        <input type="text" id="username" name="account_number" class="form-control" placeholder="Enter User ID" autocomplete="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-input-group">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" autocomplete="current-password" required>
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()"><i class="fa-solid fa-eye" id="toggleIcon"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" name="remember_me">
+                            <span>Remember User ID</span>
+                        </label>
+                        <a href="#" class="forgot-link">Forgot User ID or Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-citi-blue btn-full">SIGN ON</button>
+                </form>
+
+                <div class="card-footer-links">
+                    <p>Not enrolled in Citi Online?</p>
+                    <a href="#" class="btn-secondary-outline btn-full">Register / Enroll Now</a>
+                </div>
+            </div>
+
+            <!-- Side Information & Security Guarantee -->
+            <div class="signon-info-box">
+                <div class="citi-card info-card">
+                    <i class="fa-solid fa-shield-halved info-icon"></i>
+                    <h3>Online Banking Security Guarantee</h3>
+                    <p>Citibank provides 100% protection against unauthorized transfers made through Citi Online when you report them promptly.</p>
+                </div>
+
+                <div class="citi-card info-card">
+                    <i class="fa-solid fa-mobile-screen-button info-icon"></i>
+                    <h3>Bank Anywhere with Citi Mobile</h3>
+                    <p>Manage your account, view statements, make deposits, and transfer funds seamlessly on mobile devices.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="citi-footer">
+        <div class="citi-container">
+            <div class="footer-links">
+                <a href="#">Privacy</a>
+                <a href="#">Security</a>
+                <a href="#">Terms & Conditions</a>
+                <a href="#">Member FDIC</a>
+            </div>
+            <p>&copy; {% now "Y" %} Citigroup Inc. All rights reserved. Equal Housing Lender.</p>
+        </div>
+    </footer>
+
+    <!-- Toggle Password Script -->
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>
