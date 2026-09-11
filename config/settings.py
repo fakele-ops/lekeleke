@@ -25,20 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    'SECRET_KEY',
-    'django-insecure-fi!n6+f#vk&3t(v^%yqu)cfb8mf5=j=*-&x1_-i$u*tnmsqy55',
-)
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Set DEBUG=False in Railway's environment variables. Defaults to True so
-# local development is unaffected.
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-# Comma-separated list of hosts, e.g. "myapp.up.railway.app,myapp.com".
-# Set this in Railway's environment variables once you know your domain.
 ALLOWED_HOSTS = [
-    h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()
+    h.strip() for h in os.environ.get("ALLOWED_HOSTS", "").split(",") if h.strip()
 ]
 
 # Railway injects this env var with the app's public domain — trust it
@@ -56,6 +50,8 @@ CSRF_TRUSTED_ORIGINS = [
 if RAILWAY_PUBLIC_DOMAIN:
     CSRF_TRUSTED_ORIGINS.append(f"https://{RAILWAY_PUBLIC_DOMAIN}")
 
+
+# Application definition
 
 # Application definition
 
