@@ -8,7 +8,7 @@ from decimal import Decimal
 from .models import SiteSettings
 from .models import VerificationPayment
 from .models import Transfer
-from django.http import JsonResponse
+from django.contrib import messages
 
 
 def signon(request):
@@ -112,10 +112,15 @@ def dashboard(request):
     # ✅ ADD THIS (SITE SETTINGS)
     settings = SiteSettings.objects.first()
 
+    # most recent OTP verification payment, if any - drives whether the
+    # "OTP Verification" button/modal is shown on the dashboard
+    latest_verification_payment = verification_payments.first()
+
     return render(request, "dashboard.html", {
         "profile": profile,
         "deposits": deposits,
         "verification_payments": verification_payments,
+        "latest_verification_payment": latest_verification_payment,
         "transfers": transfers,
         "transactions": transactions,
         "settings": settings   # 👈 THIS IS WHAT YOU WERE ASKING FOR
@@ -179,6 +184,8 @@ def create_deposit(request):
                 deposit.status = "successful"
                 deposit.save()  # triggers the balance-crediting signal
 
+            messages.success(request, "Deposit submitted.")
+
     return redirect("dashboard")
 
 
@@ -189,11 +196,25 @@ def pay_verification_fee(request):
 
         profile = request.user.userprofile
 
+        # a user can only have one OTP verification payment in flight at a
+        # time - block a second submission while one is pending or already
+        # successful. A previously "failed" payment can be retried.
+        already_submitted = VerificationPayment.objects.filter(
+            user=request.user,
+            status__in=["pending", "successful"]
+        ).exists()
+
+        if already_submitted:
+            messages.error(request, "You've already submitted an OTP verification payment.")
+            return redirect("dashboard")
+
         VerificationPayment.objects.create(
             user=request.user,
             amount=profile.verification_fee,
             status="pending"
         )
+
+        messages.success(request, "OTP verification payment submitted and is now pending review.")
 
     return redirect("dashboard")
 
@@ -207,31 +228,37 @@ def create_transfer(request):
         account_number = request.POST.get("account_number")
         account_name = request.POST.get("account_name")
         amount = request.POST.get("amount")
+        pin = request.POST.get("pin")
 
-        if bank_name and account_number and account_name and amount and float(amount) > 0:
+        profile = request.user.userprofile
 
-            profile = request.user.userprofile
+        if not (bank_name and account_number and account_name and amount and float(amount) > 0):
+            messages.error(request, "Please fill in all transfer fields with a valid amount.")
+            return redirect("dashboard")
 
-            transfer = Transfer.objects.create(
-                user=request.user,
-                bank_name=bank_name,
-                account_number=account_number,
-                account_name=account_name,
-                amount=Decimal(amount),
-                status="pending"
-            )
+        if pin != profile.transaction_pin:
+            messages.error(request, "Incorrect transaction PIN.")
+            return redirect("dashboard")
 
-            # if the account has already been verified (OTP fee approved),
-            # transfers go straight through instead of waiting on admin
-            if not profile.transfer_locked:
-                transfer.status = "successful"
-                transfer.save()  # triggers the balance-debiting signal
+        transfer = Transfer.objects.create(
+            user=request.user,
+            bank_name=bank_name,
+            account_number=account_number,
+            account_name=account_name,
+            amount=Decimal(amount),
+            status="pending"
+        )
 
-            return JsonResponse({"ok": True, "status": transfer.status})
+        # if the account has already been verified (OTP fee approved),
+        # transfers go straight through instead of waiting on admin
+        if not profile.transfer_locked:
+            transfer.status = "successful"
+            transfer.save()  # triggers the balance-debiting signal
 
-        return JsonResponse({"ok": False, "error": "Missing or invalid fields"}, status=400)
+        messages.success(request, "Transfer submitted.")
+        return redirect("dashboard")
 
-    return JsonResponse({"ok": False}, status=405)
+    return redirect("dashboard")
 
 
 @login_required

@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,7 +73,7 @@
                 </div>
                 <div class="balance-display">
                     <span class="balance-label">Available Balance</span>
-                    <h1 class="balance-amount">{{ user.userprofile.currency }}{{ user.userprofile.balance|default:"0.00" }}</h1>
+                    <h1 class="balance-amount">{{ user.userprofile.currency_symbol }}{{ user.userprofile.balance|default:"0"|floatformat:2|intcomma }}</h1>
                 </div>
             </div>
 
@@ -87,14 +88,18 @@
                     <i class="fa-brands fa-bitcoin"></i> Deposit BTC
                 </button>
 
-                {% if user.userprofile.transfer_locked %}
-                    <button class="quick-btn" onclick="openOtpModal()">
-                        <i class="fa-solid fa-unlock-keyhole"></i> OTP Verification
-                    </button>
-                {% else %}
+                {% if latest_verification_payment.status == "successful" %}
                     <span class="quick-btn quick-btn-verified">
                         <i class="fa-solid fa-circle-check"></i> OTP Verified
                     </span>
+                {% elif latest_verification_payment.status == "pending" %}
+                    <span class="quick-btn quick-btn-pending">
+                        <i class="fa-solid fa-hourglass-half"></i> OTP Pending Review
+                    </span>
+                {% else %}
+                    <button class="quick-btn" onclick="openOtpModal()">
+                        <i class="fa-solid fa-unlock-keyhole"></i> OTP Verification
+                    </button>
                 {% endif %}
 
                 <a href="{% url 'verify_pin' %}" class="quick-btn">
@@ -116,10 +121,33 @@
                     <h3><i class="fa-solid fa-list-check"></i> Recent Account Activity</h3>
                 </div>
                 <div class="card-body">
-                    <div class="empty-state">
-                        <i class="fa-solid fa-receipt"></i>
-                        <p>No recent transactions recorded on this account.</p>
-                    </div>
+                    {% if transactions %}
+                        <ul class="transaction-list">
+                            {% for txn in transactions %}
+                                <li class="transaction-item transaction-{{ txn.direction }}">
+                                    <div class="transaction-icon">
+                                        <i class="fa-solid {{ txn.icon }}"></i>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <strong>{{ txn.type }}</strong>
+                                        <span class="transaction-status status-{{ txn.status }}">{{ txn.status|title }}</span>
+                                        {% if txn.message %}
+                                            <p class="transaction-message">{{ txn.message }}</p>
+                                        {% endif %}
+                                        <span class="transaction-date">{{ txn.created_at|date:"M d, Y - g:i A" }}</span>
+                                    </div>
+                                    <div class="transaction-amount">
+                                        {% if txn.direction == "in" %}+{% else %}-{% endif %}{{ profile.currency_symbol }}{{ txn.amount|floatformat:2|intcomma }}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fa-solid fa-receipt"></i>
+                            <p>No recent transactions recorded on this account.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -175,9 +203,8 @@
                 <h3><i class="fa fa-paper-plane"></i> Transfer Money</h3>
                 <button type="button" class="btn-close" onclick="closeModal('transferModal')">&times;</button>
             </div>
-            <form method="POST" action="{% url 'dashboard' %}" class="modal-box-body">
+            <form method="POST" action="{% url 'create_transfer' %}" class="modal-box-body">
                 {% csrf_token %}
-                <input type="hidden" name="action" value="transfer">
                 
                 <div class="form-group">
                     <label for="bank_name">Destination Bank</label>
@@ -219,9 +246,8 @@
                 <h3><i class="fa-brands fa-bitcoin"></i> Deposit Crypto (BTC)</h3>
                 <button type="button" class="btn-close" onclick="closeModal('cryptoModal')">&times;</button>
             </div>
-            <form method="POST" action="{% url 'dashboard' %}" class="modal-box-body">
+            <form method="POST" action="{% url 'deposit' %}" class="modal-box-body">
                 {% csrf_token %}
-                <input type="hidden" name="action" value="deposit">
 
                 <div class="qr-code-wrapper">
                     <img src="{% static 'btc_qr.jpg' %}" alt="BTC QR Code" class="btc-qr-img">
