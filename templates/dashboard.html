@@ -69,7 +69,7 @@
             <div class="account-header">
                 <div>
                     <span class="account-type-label">CITIBANK CHECKING ACCOUNT</span>
-                    <h2 class="account-number-display">Account #: {{ user.userprofile.account_number|default:"N/A" }}</h2>
+                    <h2 class="account-number-display">Account: {{ user.userprofile.account_number|default:"N/A" }}</h2>
                 </div>
                 <div class="balance-display">
                     <span class="balance-label">Available Balance</span>
