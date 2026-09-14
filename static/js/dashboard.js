@@ -18,11 +18,33 @@ function openCryptoModal() {
     }
 }
 
+// Open OTP Verification Modal
+function openOtpModal() {
+    const modal = document.getElementById('otpModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
 // Close Modal Utility
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('active');
+    }
+}
+
+// Generic Copy-to-Clipboard by element id
+function copyToClipboard(elementId) {
+    const input = document.getElementById(elementId);
+    if (input) {
+        input.select();
+        input.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(input.value).then(() => {
+            alert('Copied to clipboard!');
+        }).catch(err => {
+            alert('Failed to copy: ' + err);
+        });
     }
 }
 
