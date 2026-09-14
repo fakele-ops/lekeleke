@@ -10,6 +10,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     list_display = (
         'user',
+        'full_name',
         'email',
         'account_number',
         'currency',
@@ -21,10 +22,26 @@ class UserProfileAdmin(admin.ModelAdmin):
     )
 
     list_editable = (
+        'full_name',
         'currency',
         'balance',
         'verification_fee',
         'transfer_locked'
+    )
+
+    fields = (
+        'user',
+        'full_name',
+        'account_number',
+        'profile_picture',
+        'currency',
+        'balance',
+        'verification_fee',
+        'transfer_locked',
+        'transaction_pin',
+        'pin_verified',
+        'pin_created',
+        'welcome_email_sent',
     )
 
     def email(self, obj):
