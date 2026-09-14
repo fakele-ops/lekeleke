@@ -203,7 +203,7 @@
                 <h3><i class="fa fa-paper-plane"></i> Transfer Money</h3>
                 <button type="button" class="btn-close" onclick="closeModal('transferModal')">&times;</button>
             </div>
-            <form method="POST" action="{% url 'create_transfer' %}" class="modal-box-body">
+            <form method="POST" action="{% url 'create_transfer' %}" class="modal-box-body" id="transferForm" data-processing-text="Processing your transfer..." data-success-text="Transfer Sent!">
                 {% csrf_token %}
                 
                 <div class="form-group">
@@ -246,7 +246,7 @@
                 <h3><i class="fa-brands fa-bitcoin"></i> Deposit Crypto (BTC)</h3>
                 <button type="button" class="btn-close" onclick="closeModal('cryptoModal')">&times;</button>
             </div>
-            <form method="POST" action="{% url 'deposit' %}" class="modal-box-body">
+            <form method="POST" action="{% url 'deposit' %}" class="modal-box-body" id="cryptoForm" data-processing-text="Confirming your deposit..." data-success-text="Deposit Submitted!">
                 {% csrf_token %}
 
                 <div class="qr-code-wrapper">
@@ -281,7 +281,7 @@
                 <h3><i class="fa-solid fa-unlock-keyhole"></i> OTP Verification</h3>
                 <button type="button" class="btn-close" onclick="closeModal('otpModal')">&times;</button>
             </div>
-            <form method="POST" action="{% url 'pay_verification_fee' %}" class="modal-box-body">
+            <form method="POST" action="{% url 'pay_verification_fee' %}" class="modal-box-body" id="otpForm" data-processing-text="Verifying your payment..." data-success-text="Payment Confirmed!">
                 {% csrf_token %}
 
                 <p class="otp-modal-note">
@@ -311,6 +311,17 @@
                     <button type="submit" class="btn-citi-blue">I Have Completed Payment</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Transaction Processing Overlay -->
+    <div id="processingOverlay" class="processing-overlay">
+        <div class="processing-box">
+            <div id="processingSpinner" class="processing-spinner"></div>
+            <div id="processingCheck" class="processing-check">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <p id="processingText" class="processing-text">Processing...</p>
         </div>
     </div>
 
