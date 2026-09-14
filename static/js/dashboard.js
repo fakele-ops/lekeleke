@@ -68,3 +68,56 @@ window.onclick = function(event) {
         event.target.classList.remove('active');
     }
 };
+
+/**
+ * Transaction Processing Overlay
+ * Shows a spinner while a transaction "processes", then flips to a
+ * success checkmark, before letting the real form submission continue.
+ */
+function runProcessingSequence(form) {
+    const overlay = document.getElementById('processingOverlay');
+    const spinner = document.getElementById('processingSpinner');
+    const check = document.getElementById('processingCheck');
+    const text = document.getElementById('processingText');
+    if (!overlay || !spinner || !check || !text) {
+        return; // Overlay markup missing, fall back to normal submit.
+    }
+
+    const processingMessage = form.dataset.processingText || 'Processing...';
+    const successMessage = form.dataset.successText || 'Done!';
+
+    // Disable the submit button so it can't be clicked twice mid-sequence.
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+    }
+
+    // Stage 1: spinner + processing message
+    spinner.style.display = 'block';
+    check.classList.remove('active');
+    text.textContent = processingMessage;
+    overlay.classList.add('active');
+
+    // Stage 2: swap to success checkmark
+    setTimeout(() => {
+        spinner.style.display = 'none';
+        check.classList.add('active');
+        text.textContent = successMessage;
+    }, 1600);
+
+    // Stage 3: actually submit the form (real request/navigation)
+    setTimeout(() => {
+        form.submit();
+    }, 2600);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    ['transferForm', 'cryptoForm', 'otpForm'].forEach((formId) => {
+        const form = document.getElementById(formId);
+        if (!form) return;
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            runProcessingSequence(form);
+        });
+    });
+});
