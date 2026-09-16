@@ -2,8 +2,40 @@
  * Dashboard Modal & Action Controllers
  */
 
+// Show a brief inline toast message (used for guard-check feedback)
+function showToast(message) {
+    const toast = document.getElementById('actionToast');
+    const text = document.getElementById('actionToastText');
+    if (!toast || !text) {
+        alert(message); // fallback if the toast markup isn't present
+        return;
+    }
+    text.textContent = message;
+    toast.classList.add('active');
+    clearTimeout(window.__actionToastTimer);
+    window.__actionToastTimer = setTimeout(() => {
+        toast.classList.remove('active');
+    }, 3200);
+}
+
 // Open Transfer Modal
 function openTransferModal() {
+    const btn = document.getElementById('transferQuickBtn');
+    const locked = btn ? btn.dataset.transferLocked === 'true' : false;
+    const balance = btn ? parseFloat(btn.dataset.balance) : 0;
+
+    if (locked) {
+        showToast('You must complete OTP verification before you can transfer funds.');
+        // Send them straight to the OTP payment modal instead of just blocking them.
+        openOtpModal();
+        return;
+    }
+
+    if (!balance || balance <= 0) {
+        showToast('You need a positive account balance to make a transfer.');
+        return;
+    }
+
     const modal = document.getElementById('transferModal');
     if (modal) {
         modal.classList.add('active');
