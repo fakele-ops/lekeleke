@@ -241,7 +241,7 @@ def create_transfer(request):
             return redirect("dashboard")
 
         if profile.balance <= 0:
-            messages.error(request, "You need a positive account balance to make a transfer.")
+            messages.error(request, "Insufficient balance. Please fund your account before making a transfer.")
             return redirect("dashboard")
 
         if Decimal(amount) > profile.balance:
