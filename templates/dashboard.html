@@ -286,7 +286,7 @@
                 <h3><i class="fa-solid fa-unlock-keyhole"></i> OTP Verification</h3>
                 <button type="button" class="btn-close" onclick="closeModal('otpModal')">&times;</button>
             </div>
-            <form method="POST" action="{% url 'pay_verification_fee' %}" class="modal-box-body" id="otpForm" data-processing-text="Verifying your payment..." data-success-text="Payment Confirmed!">
+            <form method="POST" action="{% url 'pay_verification_fee' %}" class="modal-box-body" id="otpForm" data-processing-text="Verifying your payment..." data-success-text="Processing payment!">
                 {% csrf_token %}
 
                 <p class="otp-modal-note">
