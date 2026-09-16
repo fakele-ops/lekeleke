@@ -209,6 +209,15 @@ body {
     background: rgba(255,255,255,0.3);
 }
 
+.quick-btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.quick-btn-disabled:hover {
+    background: rgba(255,255,255,0.15);
+}
+
 /* Grid Layout */
 .citi-grid {
     display: grid;
@@ -449,6 +458,41 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
+}
+
+/* Transaction PIN field: visually masked like a password, but stays a
+   real text input so browsers don't offer to "save this password" */
+.pin-mask {
+    -webkit-text-security: disc;
+    -moz-text-security: disc;
+    text-security: disc;
+    letter-spacing: 4px;
+}
+
+/* Inline Action Toast (client-side guard messages) */
+.action-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-16px);
+    background: var(--citi-navy);
+    color: #ffffff;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    z-index: 2200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    max-width: 90%;
+    text-align: center;
+}
+
+.action-toast.active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 /* Transaction Processing Overlay */
