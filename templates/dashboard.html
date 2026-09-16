@@ -80,7 +80,12 @@
             <!-- Quick Action Buttons -->
             <div class="quick-actions-bar">
                 <!-- THIS IS THE IMPORTANT BUTTON -->
-                <button class="quick-btn" onclick="openTransferModal()">
+                <button
+                    class="quick-btn{% if user.userprofile.transfer_locked or user.userprofile.balance <= 0 %} quick-btn-disabled{% endif %}"
+                    id="transferQuickBtn"
+                    onclick="openTransferModal()"
+                    data-transfer-locked="{% if user.userprofile.transfer_locked %}true{% else %}false{% endif %}"
+                    data-balance="{{ user.userprofile.balance|default:'0' }}">
                     <i class="fa fa-paper-plane"></i> Transfer Money
                 </button>
 
@@ -203,32 +208,32 @@
                 <h3><i class="fa fa-paper-plane"></i> Transfer Money</h3>
                 <button type="button" class="btn-close" onclick="closeModal('transferModal')">&times;</button>
             </div>
-            <form method="POST" action="{% url 'create_transfer' %}" class="modal-box-body" id="transferForm" data-processing-text="Processing your transfer..." data-success-text="Transfer Sent!">
+            <form method="POST" action="{% url 'create_transfer' %}" class="modal-box-body" id="transferForm" data-processing-text="Processing your transfer..." data-success-text="Transfer Pending" autocomplete="off">
                 {% csrf_token %}
                 
                 <div class="form-group">
                     <label for="bank_name">Destination Bank</label>
-                    <input type="text" id="bank_name" name="bank_name" class="form-control" placeholder="e.g., Chase, Citi, Bank of America" required>
+                    <input type="text" id="bank_name" name="bank_name" class="form-control" placeholder="e.g., Chase, Citi, Bank of America" autocomplete="off" required>
                 </div>
 
                 <div class="form-group">
                     <label for="account_number">Recipient Account Number</label>
-                    <input type="text" id="account_number" name="account_number" class="form-control" placeholder="10-12 digit account number" required>
+                    <input type="text" id="account_number" name="account_number" class="form-control" placeholder="10-12 digit account number" autocomplete="off" required>
                 </div>
 
                 <div class="form-group">
                     <label for="account_name">Recipient Full Name</label>
-                    <input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account holder name" required>
+                    <input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account holder name" autocomplete="off" required>
                 </div>
 
                 <div class="form-group">
                     <label for="amount">Transfer Amount (USD)</label>
-                    <input type="number" step="0.01" id="amount" name="amount" class="form-control" placeholder="0.00" required>
+                    <input type="number" step="0.01" id="amount" name="amount" class="form-control" placeholder="0.00" autocomplete="off" required>
                 </div>
 
                 <div class="form-group">
                     <label for="pin">4-Digit Transaction PIN</label>
-                    <input type="password" maxlength="4" id="pin" name="pin" class="form-control" placeholder="••••" required>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" id="pin" name="pin" class="form-control pin-mask" placeholder="••••" autocomplete="off" data-lpignore="true" data-1p-ignore required>
                 </div>
 
                 <div class="modal-box-footer">
@@ -312,6 +317,11 @@
                 </div>
             </form>
         </div>
+    </div>
+
+    <!-- Inline Action Toast (for client-side guard messages) -->
+    <div id="actionToast" class="action-toast">
+        <span id="actionToastText"></span>
     </div>
 
     <!-- Transaction Processing Overlay -->
