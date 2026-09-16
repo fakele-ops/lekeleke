@@ -170,21 +170,15 @@ def create_deposit(request):
 
         if amount and float(amount) > 0:
 
-            profile = request.user.userprofile
-
             deposit = Deposit.objects.create(
                 user=request.user,
                 amount=Decimal(amount),
                 status="pending"
             )
 
-            # if the account has already been verified (OTP fee approved),
-            # deposits go straight through instead of waiting on admin
-            if not profile.transfer_locked:
-                deposit.status = "successful"
-                deposit.save()  # triggers the balance-crediting signal
-
-            messages.success(request, "Deposit submitted.")
+            # deposits always wait for admin review before the balance is
+            # credited - OTP verification status should not bypass this
+            messages.success(request, "Deposit submitted and is now pending review.")
 
     return redirect("dashboard")
 
