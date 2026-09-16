@@ -236,6 +236,18 @@ def create_transfer(request):
             messages.error(request, "Please fill in all transfer fields with a valid amount.")
             return redirect("dashboard")
 
+        if profile.transfer_locked:
+            messages.error(request, "Your account isn't OTP-verified yet. Please complete the OTP verification payment before making a transfer.")
+            return redirect("dashboard")
+
+        if profile.balance <= 0:
+            messages.error(request, "You need a positive account balance to make a transfer.")
+            return redirect("dashboard")
+
+        if Decimal(amount) > profile.balance:
+            messages.error(request, "Transfer amount exceeds your available balance.")
+            return redirect("dashboard")
+
         if pin != profile.transaction_pin:
             messages.error(request, "Incorrect transaction PIN.")
             return redirect("dashboard")
