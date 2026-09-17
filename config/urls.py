@@ -19,11 +19,17 @@ from django.urls import path
 from accounts.views import home, signon, dashboard, verify_pin, edit_pin, create_deposit, pay_verification_fee, create_transfer
 from django.contrib.auth import views as auth_views
 
+# Import the robots view from config.views
+from config.views import robots_txt
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', home, name='home'),
+
+    # Block crawlers: serve robots.txt
+    path('robots.txt', robots_txt),
 
     path('signon/', signon, name='signon'),
 
