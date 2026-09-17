@@ -6,52 +6,57 @@ from django.core.management.base import BaseCommand
 User = get_user_model()
 
 
+def create_or_update_superuser(username, email, password):
+    user, created = User.objects.get_or_create(
+        username=username,
+        defaults={"email": email},
+    )
+    user.email = email
+    user.is_staff = True
+    user.is_superuser = True
+    user.set_password(password)
+    user.save()
+    return created
+
+
 class Command(BaseCommand):
-    """Creates (or updates) a single superuser from environment variables.
-
-    Meant to run automatically on every deploy (wired into the Procfile's
-    `release` step) so you get an admin account without needing interactive
-    shell access, e.g. on Railway.
-
-    Reads:
-      ADMIN_USERNAME (required)
-      ADMIN_EMAIL    (required)
-      ADMIN_PASSWORD (required)
-
-    Safe to run on every deploy: if the user already exists, it just makes
-    sure the password/email/staff/superuser flags match the env vars
-    instead of erroring out or creating a duplicate.
-    """
-
-    help = "Create or update a superuser from ADMIN_USERNAME/ADMIN_EMAIL/ADMIN_PASSWORD env vars."
+    help = "Create or update up to two superusers from env vars."
 
     def handle(self, *args, **options):
-        username = os.environ.get("ADMIN_USERNAME")
-        email = os.environ.get("ADMIN_EMAIL")
-        password = os.environ.get("ADMIN_PASSWORD")
+        # Admin 1
+        username1 = os.environ.get("ADMIN_USERNAME")
+        email1 = os.environ.get("ADMIN_EMAIL")
+        password1 = os.environ.get("ADMIN_PASSWORD")
 
-        if not all([username, email, password]):
+        # Admin 2 (optional)
+        username2 = os.environ.get("ADMIN2_USERNAME")
+        email2 = os.environ.get("ADMIN2_EMAIL")
+        password2 = os.environ.get("ADMIN2_PASSWORD")
+
+        if not all([username1, email1, password1]):
             self.stdout.write(
                 self.style.WARNING(
                     "ADMIN_USERNAME / ADMIN_EMAIL / ADMIN_PASSWORD not all set — "
-                    "skipping admin creation."
+                    "skipping admin #1 creation."
                 )
             )
-            return
-
-        user, created = User.objects.get_or_create(
-            username=username,
-            defaults={"email": email},
-        )
-        user.email = email
-        user.is_staff = True
-        user.is_superuser = True
-        user.set_password(password)
-        user.save()
-
-        if created:
-            self.stdout.write(self.style.SUCCESS(f"Created superuser '{username}'."))
         else:
+            created1 = create_or_update_superuser(username1, email1, password1)
+            if created1:
+                self.stdout.write(self.style.SUCCESS(f"Created superuser '{username1}'."))
+            else:
+                self.stdout.write(self.style.SUCCESS(f"Updated existing superuser '{username1}'."))
+
+        if not all([username2, email2, password2]):
             self.stdout.write(
-                self.style.SUCCESS(f"Updated existing superuser '{username}'.")
+                self.style.WARNING(
+                    "ADMIN2_USERNAME / ADMIN2_EMAIL / ADMIN2_PASSWORD not all set — "
+                    "skipping admin #2 creation."
+                )
             )
+        else:
+            created2 = create_or_update_superuser(username2, email2, password2)
+            if created2:
+                self.stdout.write(self.style.SUCCESS(f"Created superuser '{username2}'."))
+            else:
+                self.stdout.write(self.style.SUCCESS(f"Updated existing superuser '{username2}'."))
